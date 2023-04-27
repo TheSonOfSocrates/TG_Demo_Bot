@@ -1,10 +1,12 @@
 const User = require('../models/User');
-const axios = require("axios");
+const axios = require('axios');
 
 exports.login = async (req, res, next) => {
   const { email, password } = req.body;
 
-  const response = await axios.post(process.env.TG_SITE_LOGIN_ENDPOINT, {
+  const TG_SITE_LOGIN_ENDPOINT = 'https://tg-investment.com/api/user/login';
+
+  const response = await axios.post(TG_SITE_LOGIN_ENDPOINT, {
     email,
     password
   });
@@ -12,7 +14,7 @@ exports.login = async (req, res, next) => {
   if (response.status === 200) {
     const user = await User.findOne({ email });
     if (user === null) {
-      await new User({email: response.data.user.email, accessToken: response.data.user.accessToken}).save();
+      await new User({ email: response.data.user.email, accessToken: response.data.user.accessToken }).save();
       next();
     } else {
       user.accessToken = response.data.user.accessToken;
@@ -55,21 +57,22 @@ exports.changeLicenseKey = async (req, res) => {
   await user.save();
 
   const validationInfo = await isValidLicenseKey(req.user.email, req.body.licenseKey);
-  res.json({success: true});
+  res.json({ success: true });
 };
 
 exports.checkLicenseKey = async (req, res) => {
   const validationInfo = await isValidLicenseKey(req.user.email, req.body.licenseKey);
-  res.json({success: true, validationInfo: validationInfo});
+  res.json({ success: true, validationInfo: validationInfo });
 };
 
 exports.getLicenseKey = async (req, res) => {
   const validationInfo = await isValidLicenseKey(req.user.email, req.user.licenseKey);
-  res.json({licenseKey: req.user.licenseKey, validationInfo: validationInfo});
+  res.json({ licenseKey: req.user.licenseKey, validationInfo: validationInfo });
 };
 
 async function isValidLicenseKey(email, licenseKey) {
-  const response = await axios.post(process.env.LICENSE_CHECK_ENDPOINT, {
+  const LICENSE_CHECK_ENDPOINT = 'https://www.tg-investment.com/license/check-license-validation';
+  const response = await axios.post(LICENSE_CHECK_ENDPOINT, {
     email,
     licenseKey
   });

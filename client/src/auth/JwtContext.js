@@ -3,6 +3,7 @@ import { createContext, useEffect, useReducer, useCallback, useMemo } from 'reac
 // utils
 import axios from '../utils/axios';
 import localStorageAvailable from '../utils/localStorageAvailable';
+import { SERVER_URL } from '../config-global';
 //
 import { isValidToken, setSession, jwtDecode } from './utils';
 
@@ -131,7 +132,7 @@ export function AuthProvider({ children }) {
 
   // LOGIN
   const login = useCallback(async (email, password) => {
-    const response = await axios.post('/api/user/login', {
+    const response = await axios.post(SERVER_URL + '/api/user/login', {
       email,
       password,
     });
