@@ -1,0 +1,88 @@
+{
+  "name": "@minimal/minimal-kit-react",
+  "author": "Minimals UI",
+  "version": "4.1.0",
+  "description": "Simple React Scripts & Javascript",
+  "private": true,
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "eject": "react-scripts eject",
+    "lint": "eslint --ext .js,.jsx .",
+    "lint:fix": "eslint --fix --ext .js,.jsx .",
+    "prettier": "prettier --write 'src/**/*.{js,jsx}'",
+    "clear-all": "rm -rf build node_modules",
+    "re-start": "rm -rf build node_modules && yarn install && yarn start",
+    "re-build": "rm -rf build node_modules && yarn install && yarn build"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "dependencies": {
+    "@emotion/cache": "^11.10.5",
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "@hookform/resolvers": "^2.9.10",
+    "@iconify/react": "^4.0.0",
+    "@mui/icons-material": "^5.11.11",
+    "@mui/lab": "^5.0.0-alpha.109",
+    "@mui/material": "^5.10.15",
+    "@reduxjs/toolkit": "^1.9.1",
+    "autosuggest-highlight": "^3.3.4",
+    "axios": "^1.2.0",
+    "change-case": "^4.1.2",
+    "date-fns": "^2.29.3",
+    "framer-motion": "^7.6.12",
+    "history": "^5.3.0",
+    "i18next": "^22.0.6",
+    "i18next-browser-languagedetector": "^7.0.1",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.4",
+    "notistack": "^2.0.8",
+    "nprogress": "^0.2.0",
+    "numeral": "^2.0.6",
+    "prop-types": "^15.8.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-helmet-async": "^1.3.0",
+    "react-hook-form": "^7.39.5",
+    "react-i18next": "^12.0.0",
+    "react-lazy-load-image-component": "^1.5.6",
+    "react-moment": "^1.1.2",
+    "react-redux": "^8.0.5",
+    "react-router": "^6.4.3",
+    "react-router-dom": "^6.4.3",
+    "react-scripts": "^5.0.1",
+    "react-sticky": "^6.0.3",
+    "react-stickynode": "^4.1.0",
+    "react-tradingview-widget": "^1.3.2",
+    "redux": "^4.2.0",
+    "simplebar": "^5.3.9",
+    "simplebar-react": "^2.4.3",
+    "stylis": "^4.1.3",
+    "stylis-plugin-rtl": "^2.1.1",
+    "web-vitals": "^3.1.0",
+    "yup": "^0.32.11"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.20.2",
+    "@babel/eslint-parser": "^7.19.1"
+  },
+  "overrides": {
+    "nth-check": "2.1.1"
+  }
+}
