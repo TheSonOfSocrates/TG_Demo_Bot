@@ -9,6 +9,6 @@ router.post('/get-license-key', userController.isAuthorized, userController.getL
 router.post('/check-license-key', userController.isAuthorized, userController.checkLicenseKey);
 router.post('/change-license-key', userController.isAuthorized, userController.changeLicenseKey);
 router.post('/connect-db', userController.isAuthorized, userController.connectDB);
-router.post('/is-connected-db', userController.isAuthorized, userController.isConnectedDB);
+router.post('/is-connected-db', userController.isConnectedDB);
 
 module.exports = router;
