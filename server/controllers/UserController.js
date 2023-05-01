@@ -33,12 +33,12 @@ module.exports.isAuthorized = async function(req, res, next) {
       next();
     } else {
       res.status(401).json({
-        error: new Error('Invalid token.')
+        error: 'Credential doesn\'t mathch'
       });
     }
   } catch (e) {
     res.status(401).json({
-      error: new Error('You need to sign in first.')
+      error: new Error('Something went wrong.')
     });
   }
 };
