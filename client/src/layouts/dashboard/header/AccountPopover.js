@@ -50,8 +50,13 @@ export default function AccountPopover() {
   };
 
   useEffect(() => {
-    getConnectionStatus();
-    getLicenseKey();
+    const getDataFromServer = async function() {
+      await getConnectionStatus();
+      await getLicenseKey();
+    }
+
+    getDataFromServer();
+
   }, []);
 
   const handleClosePopover = () => {
