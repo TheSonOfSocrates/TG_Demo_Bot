@@ -38,7 +38,7 @@ module.exports.isAuthorized = async function(req, res, next) {
     }
   } catch (e) {
     res.status(401).json({
-      error: new Error('Something went wrong.')
+      error: 'Something went wrong.' + e.message
     });
   }
 };
@@ -49,12 +49,12 @@ module.exports.isDBConnected = async function(req, res, next) {
       next();
     } else {
       res.status(503).json({
-        error: new Error('You need to connect to database first.')
+        error: 'You need to connect to database first.'
       });
     }
   } catch (e) {
     res.status(503).json({
-      error: new Error('You need to connect to database first.')
+      error: 'Something went wrong.' + e.message
     });
   }
 };
