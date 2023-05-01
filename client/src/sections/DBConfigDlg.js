@@ -25,6 +25,7 @@ import { useEffect, useState } from 'react';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
+import { useSnackbar } from '../components/snackbar';
 // ----------------------------------------------------------------------
 
 const modalStyle = {
@@ -52,8 +53,15 @@ export default function DBConfigDlg(props) {
   const [dbUserName, setDbUserName] = useState('');
   const [dbPassword, setDbPassword] = useState('');
 
+  const { enqueueSnackbar } = useSnackbar();
+
   const connectDBWithOption = () => {
-    connectDB({ dbUrl, dbUserName, dbPassword });
+    const result = connectDB({ dbUrl, dbUserName, dbPassword });
+    if (result) {
+      enqueueSnackbar('Database connection succeed.');
+    } else {
+      enqueueSnackbar('Database connection failed.');
+    }
   };
 
   const handleDBUrlChange = (e) => {
@@ -156,7 +164,7 @@ export default function DBConfigDlg(props) {
             Connect
           </Button>
           <Button autoFocus onClick={handleDBConfigDlgClose}>
-            Cancel
+            Close
           </Button>
         </DialogActions>
       </Box>

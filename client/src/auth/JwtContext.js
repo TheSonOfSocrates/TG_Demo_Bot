@@ -68,6 +68,12 @@ const reducer = (state, action) => {
       remains: action.payload.remains,
     };
   }
+  if (action.type === 'IS_CONNECTED_DB') {
+    return {
+      ...state,
+      isConnected: action.payload.isConnected,
+    };
+  }
   if (action.type === 'CONNECT_DB') {
     return {
       ...state,
@@ -265,6 +271,21 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
+  const getConnectionStatus = useCallback(async (options) => {
+    const response = await axios.post('/api/user/is-connected-db');
+
+    if (response.status === 200) {
+      dispatch({
+        type: 'IS_CONNECTED_DB',
+        payload: {
+          isConnected: response.data.isConnected,
+        },
+      });
+    } else {
+      return false;
+    }
+  }, []);
+
   const connectDB = useCallback(async (options) => {
     const response = await axios.post('/api/user/connect-db', options);
 
@@ -276,7 +297,7 @@ export function AuthProvider({ children }) {
         },
       });
 
-      return response.data.success;
+      return true;
     } else {
       return false;
     }
@@ -299,9 +320,10 @@ export function AuthProvider({ children }) {
       getLicenseKey,
       changeLicenseKey,
       checkLicenseKey,
+      getConnectionStatus,
       connectDB
     }),
-    [state.isAuthenticated, state.isInitialized, state.licenseKey, state.user, state.isValidLicenseKey, state.remains, state.isConnected, login, fakeLogin, logout, register, getLicenseKey, changeLicenseKey, checkLicenseKey, connectDB],
+    [state.isAuthenticated, state.isInitialized, state.licenseKey, state.user, state.isValidLicenseKey, state.remains, state.isConnected, login, fakeLogin, logout, register, getLicenseKey, changeLicenseKey, checkLicenseKey, getConnectionStatus, connectDB],
   );
 
   return <AuthContext.Provider value={memoizedValue}>{children}</AuthContext.Provider>;

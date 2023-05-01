@@ -106,4 +106,8 @@ exports.connectDB = async (req, res) => {
     .catch((err) => console.log(err));
 };
 
+exports.isConnectedDB = async (req, res) => {
+  res.json({ isConnected: isDBConnected });
+};
+
 

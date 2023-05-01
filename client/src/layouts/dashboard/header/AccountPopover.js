@@ -37,7 +37,7 @@ const OPTIONS = [
 export default function AccountPopover() {
   const navigate = useNavigate();
 
-  const { user, logout, getLicenseKey } = useAuthContext();
+  const { user, logout, getLicenseKey, getConnectionStatus } = useAuthContext();
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -50,6 +50,7 @@ export default function AccountPopover() {
   };
 
   useEffect(() => {
+    getConnectionStatus();
     getLicenseKey();
   }, []);
 
