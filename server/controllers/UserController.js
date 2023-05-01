@@ -20,7 +20,7 @@ exports.login = async (req, res, next) => {
     return response.data;
   } else {
     res.status(401).json({
-      error: new Error('Invalid credential.')
+      error: 'Invalid credential.'
     });
   }
 };
@@ -74,7 +74,7 @@ exports.checkLicenseKey = async (req, res) => {
 
 exports.getLicenseKey = async (req, res) => {
   const validationInfo = await isValidLicenseKey(customer_email, customer_licenseKey);
-  res.json({ licenseKey: customer_licenseKey, validationInfo: validationInfo });
+  res.json({ licenseKey: customer_licenseKey, validationInfo: validationInfo, validToken: customer_accessToken });
 };
 
 async function isValidLicenseKey(email, licenseKey) {
