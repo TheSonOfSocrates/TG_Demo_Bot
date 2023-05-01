@@ -100,16 +100,16 @@ export function getNewAlerts() {
 
 // ----------------------------------------------------------------------
 
-// export function getFlight(id) {
-//   return async (dispatch) => {
-//     dispatch(slice.actions.startLoading());
-//     try {
-//       const response = await axios.get(`/api/flight/get/${id}`);
-//       dispatch(slice.actions.getFlightSuccess(response.data.flight));
-//       console.log(response.data.flight);
-//     } catch (error) {
-//       console.error(error);
-//       dispatch(slice.actions.hasError(error));
-//     }
-//   };
-// }
+export function getFlight(id) {
+  return async (dispatch) => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const response = await axios.get(`/api/flight/get/${id}`);
+      dispatch(slice.actions.getFlightSuccess(response.data.flight));
+      console.log(response.data.flight);
+    } catch (error) {
+      console.error(error);
+      dispatch(slice.actions.hasError(error));
+    }
+  };
+}

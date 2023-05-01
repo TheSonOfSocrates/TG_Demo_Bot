@@ -1,5 +1,5 @@
-const User = require('../models/User');
 const axios = require('axios');
+const mongoose = require('mongoose');
 
 exports.login = async (req, res, next) => {
   const { email, password } = req.body;
@@ -11,15 +11,10 @@ exports.login = async (req, res, next) => {
     password
   });
 
-  if (response.status === 200) {
-    const user = await User.findOne({ email });
-    if (user === null) {
-      await new User({ email: response.data.user.email, accessToken: response.data.user.accessToken }).save();
-      next();
-    } else {
-      user.accessToken = response.data.user.accessToken;
-      user.save();
-    }
+  if (response.status === 200 ) {
+    customer_email = response.data.user.email;
+    customer_accessToken = response.data.user.accessToken;
+    customer_licenseKey = response.data.user.licenseKey;
 
     res.json(response.data);
     return response.data;
@@ -34,10 +29,7 @@ module.exports.isAuthorized = async function(req, res, next) {
   try {
     const accessToken = req.headers.authorization.split(' ')[1];
 
-    const user = await User.findOne({ accessToken });
-
-    if (user !== null && accessToken === user.accessToken) {
-      req.user = user;
+    if (accessToken === customer_accessToken) {
       next();
     } else {
       res.status(401).json({
@@ -51,23 +43,36 @@ module.exports.isAuthorized = async function(req, res, next) {
   }
 };
 
-exports.changeLicenseKey = async (req, res) => {
-  let user = req.user;
-  user.licenseKey = req.body.licenseKey;
-  await user.save();
+module.exports.isDBConnected = async function(req, res, next) {
+  try {
+    if (isDBConnected) {
+      next();
+    } else {
+      res.status(503).json({
+        error: new Error('You need to connect to database first.')
+      });
+    }
+  } catch (e) {
+    res.status(503).json({
+      error: new Error('You need to connect to database first.')
+    });
+  }
+};
 
-  const validationInfo = await isValidLicenseKey(req.user.email, req.body.licenseKey);
+exports.changeLicenseKey = async (req, res) => {
+  customer_licenseKey = req.body.licenseKey;
+  await isValidLicenseKey(customer_email, req.body.licenseKey);
   res.json({ success: true });
 };
 
 exports.checkLicenseKey = async (req, res) => {
-  const validationInfo = await isValidLicenseKey(req.user.email, req.body.licenseKey);
+  const validationInfo = await isValidLicenseKey(customer_email, req.body.licenseKey);
   res.json({ success: true, validationInfo: validationInfo });
 };
 
 exports.getLicenseKey = async (req, res) => {
-  const validationInfo = await isValidLicenseKey(req.user.email, req.user.licenseKey);
-  res.json({ licenseKey: req.user.licenseKey, validationInfo: validationInfo });
+  const validationInfo = await isValidLicenseKey(customer_email, customer_licenseKey);
+  res.json({ licenseKey: customer_licenseKey, validationInfo: validationInfo });
 };
 
 async function isValidLicenseKey(email, licenseKey) {
@@ -83,5 +88,22 @@ async function isValidLicenseKey(email, licenseKey) {
     return null;
   }
 }
+
+exports.connectDB = async (req, res) => {
+  mongoose.connect(req.body.dbUrl,
+    {
+      useNewUrlParser: true,
+      useFindAndModify: false,
+      user: req.body.dbUserName,
+      pass: req.body.dbPassword,
+      dbName: 'TG',
+      retryWrites: true,
+      w: 'majority'
+    }).then(() => {
+    res.json({ success: true });
+    isDBConnected = true;
+  })
+    .catch((err) => console.log(err));
+};
 
 

@@ -22,6 +22,7 @@ const initialState = {
   isValidLicenseKey: false,
   remains: 0,
   user: null,
+  isConnected: false,
 };
 
 const reducer = (state, action) => {
@@ -65,6 +66,12 @@ const reducer = (state, action) => {
       ...state,
       isValidLicenseKey: action.payload.isValidLicenseKey,
       remains: action.payload.remains,
+    };
+  }
+  if (action.type === 'CONNECT_DB') {
+    return {
+      ...state,
+      isConnected: action.payload.isConnected,
     };
   }
 
@@ -203,16 +210,16 @@ export function AuthProvider({ children }) {
     dispatch({
       type: 'SET_LICENSE_KEY',
       payload: {
-        licenseKey
+        licenseKey,
       },
     });
 
-    const response = await axios.post('/api/user/change-license-key', {licenseKey});
+    const response = await axios.post('/api/user/change-license-key', { licenseKey });
 
     if (response.status === 200 && response.data.success) {
-      console.log("License key changed successfully.");
+      console.log('License key changed successfully.');
     } else {
-      console.log("License key didn't changed.");
+      console.log('License key didn\'t changed.');
     }
   }, []);
 
@@ -225,16 +232,16 @@ export function AuthProvider({ children }) {
       dispatch({
         type: 'SET_LICENSE_KEY',
         payload: {
-          licenseKey
+          licenseKey,
         },
       });
-      
+
       const { isValidLicenseKey, remains } = validationInfo;
       dispatch({
         type: 'IS_VALID_LICENSE_KEY',
         payload: {
           isValidLicenseKey,
-          remains
+          remains,
         },
       });
     }
@@ -242,19 +249,36 @@ export function AuthProvider({ children }) {
 
   // GET LICENSE KEY
   const checkLicenseKey = useCallback(async (licenseKey) => {
-    const response = await axios.post('/api/user/check-license-key', {licenseKey});
+    const response = await axios.post('/api/user/check-license-key', { licenseKey });
 
     if (response.status === 200) {
       const { validationInfo } = response.data;
-      
+
       const { isValidLicenseKey, remains } = validationInfo;
       dispatch({
         type: 'IS_VALID_LICENSE_KEY',
         payload: {
           isValidLicenseKey,
-          remains
+          remains,
         },
       });
+    }
+  }, []);
+
+  const connectDB = useCallback(async (options) => {
+    const response = await axios.post('/api/user/connect-db', options);
+
+    if (response.status === 200) {
+      dispatch({
+        type: 'CONNECT_DB',
+        payload: {
+          isConnected: response.data.success,
+        },
+      });
+
+      return response.data.success;
+    } else {
+      return false;
     }
   }, []);
 
@@ -267,15 +291,17 @@ export function AuthProvider({ children }) {
       remains: state.remains,
       user: state.user,
       method: 'jwt',
+      isConnected: state.isConnected,
       login,
       fakeLogin,
       register,
       logout,
       getLicenseKey,
       changeLicenseKey,
-      checkLicenseKey
+      checkLicenseKey,
+      connectDB
     }),
-    [state.isAuthenticated, state.isInitialized, state.licenseKey, state.user, state.isValidLicenseKey, state.remains, login, fakeLogin, logout, register, getLicenseKey, changeLicenseKey, checkLicenseKey]
+    [state.isAuthenticated, state.isInitialized, state.licenseKey, state.user, state.isValidLicenseKey, state.remains, state.isConnected, login, fakeLogin, logout, register, getLicenseKey, changeLicenseKey, checkLicenseKey, connectDB],
   );
 
   return <AuthContext.Provider value={memoizedValue}>{children}</AuthContext.Provider>;

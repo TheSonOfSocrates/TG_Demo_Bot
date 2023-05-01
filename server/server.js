@@ -9,6 +9,11 @@ const users = require('./routes/api/users');
 
 const app = express();
 
+global.isDBConnected = false;
+global.customer_email = '';
+global.customer_accessToken = '';
+global.customer_licenseKey = '';
+
 //Add Cors
 app.use(cors());
 app.options('*', cors());
@@ -42,20 +47,6 @@ app.use(
   })
 );
 app.use(bodyParser.json());
-
-// Connect to MongoDB
-
-mongoose.connect(process.env.MONGODB_URL,
-  {
-    useNewUrlParser: true,
-    useFindAndModify: false,
-    user: process.env.DB_USERNAME,
-    pass: process.env.DB_PASSWORD,
-    dbName: 'TG',
-    retryWrites: true,
-    w: 'majority'
-  }).then(() => console.log('MongoDB successfully connected'))
-  .catch((err) => console.log(err));
 
 // Routes
 app.use('/api/flight', flights);

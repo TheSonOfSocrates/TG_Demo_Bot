@@ -107,7 +107,7 @@ export default function FlightListPage() {
   const [btcbusdCount, setBtcbusdCount] = useState([]);
   const [ethbtcCount, setEthbtcCount] = useState([]);
 
-  const { isValidLicenseKey } = useAuthContext();
+  const { isValidLicenseKey, isConnected } = useAuthContext();
 
   const dataFiltered = applyFilter({
     inputData: tableData,
@@ -205,7 +205,7 @@ export default function FlightListPage() {
               component={RouterLink}
               to={PATH_DASHBOARD.flight.create}
               variant="contained"
-              disabled={!isValidLicenseKey}
+              disabled={!isValidLicenseKey || !isConnected}
               startIcon={<Iconify icon="eva:plus-fill" />}
             >
               New Flight

@@ -13,6 +13,7 @@ import { useSnackbar } from '../../../components/snackbar';
 import MenuPopover from '../../../components/menu-popover';
 import { IconButtonAnimate } from '../../../components/animate';
 import LicenseMngDlg from 'sections/LicenseMngDlg';
+import DBConfigDlg from '../../../sections/DBConfigDlg';
 
 // ----------------------------------------------------------------------
 
@@ -42,6 +43,7 @@ export default function AccountPopover() {
 
   const [openPopover, setOpenPopover] = useState(null);
   const [licenseMngDlgOpen, setLicenseMngDlgOpen] = useState(false);
+  const [dbConfigDlgOpen, setDbConfigDlgOpen] = useState(false);
 
   const handleOpenPopover = (event) => {
     setOpenPopover(event.currentTarget);
@@ -71,8 +73,17 @@ export default function AccountPopover() {
       handleClosePopover();
   };
 
+  const handleDBConfiguration = async () => {
+    setDbConfigDlgOpen(true);
+    handleClosePopover();
+  };
+
   const handleLicenseMngDlgClose = async () => {
       setLicenseMngDlgOpen(false);
+  };
+
+  const handleDbConfigDlgOpenClose = async () => {
+    setDbConfigDlgOpen(false);
   };
 
   const handleClickItem = (path) => {
@@ -129,6 +140,10 @@ export default function AccountPopover() {
           License Management
         </MenuItem>
 
+        <MenuItem onClick={handleDBConfiguration} sx={{ m: 1 }}>
+          DB Configuration
+        </MenuItem>
+
         <Divider sx={{ borderStyle: 'dashed' }} />
 
         <MenuItem onClick={handleLogout} sx={{ m: 1 }}>
@@ -137,6 +152,7 @@ export default function AccountPopover() {
       </MenuPopover>
 
       <LicenseMngDlg licenseMngDlgOpen={licenseMngDlgOpen} handleLicenseMngDlgClose={handleLicenseMngDlgClose}></LicenseMngDlg>
+      <DBConfigDlg dbConfigDlgOpen={dbConfigDlgOpen} handleDbConfigDlgOpenClose={handleDbConfigDlgOpenClose}></DBConfigDlg>
     </>
   );
 }
