@@ -34,8 +34,7 @@ module.exports.isAuthorized = async function(req, res, next) {
     } else {
       res.status(401).json({
         error: 'Credential doesn\'t mathch',
-        your_token: accessToken,
-        valid_token: customer_accessToken
+        your_token: accessToken
       });
     }
   } catch (e) {
