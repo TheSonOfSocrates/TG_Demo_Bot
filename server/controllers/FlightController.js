@@ -132,8 +132,12 @@ exports.createFlight = async (req, res) => {
 };
 
 exports.getFlights = async (req, res) => {
-  const flights = await Flight.find();
-  res.json({ flights });
+  try {
+    const flights = await Flight.find();
+    res.json({ flights });
+  } catch (e) {
+    res.json({ msg: e.toString() });
+  }
 };
 
 exports.getFlightById = async (req, res) => {
