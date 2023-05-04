@@ -96,14 +96,20 @@ exports.isKeyInputted = async (req, res) => {
 };
 
 exports.setKey = async (req, res) => {
-  isKeyInputted = true;
-  api_credential = {
-    apiKey: req.body.apiKey,
-    secret: req.body.secret
-  };
+  try {
+    isKeyInputted = true;
+    api_credential = {
+      apiKey: req.body.apiKey,
+      secret: req.body.secret
+    };
 
-  binance = new ccxt.pro.binance(api_credential);
-  binance.setSandboxMode(true);
+    binance = new ccxt.pro.binance(api_credential);
+    binance.setSandboxMode(true);
+  } catch (e) {
+    isKeyInputted = false;
+    console.log(e.toString());
+    res.json({ isKeyInputted: false, msg: e.toString() });
+  }
 
   res.json({ isKeyInputted: isKeyInputted });
 };
