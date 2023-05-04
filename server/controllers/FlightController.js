@@ -2,23 +2,21 @@ const ccxt = require('ccxt');
 const cron = require('node-cron');
 const { flatten, groupBy, sumBy } = require('lodash');
 const Flight = require('../models/Flight');
-const binanceConfig = require('../config/binance-config');
 const { fCorrectNumber, fFloatFloor } = require('../utils/FormatNumber');
 
-const binance = new ccxt.pro.binance(binanceConfig.API_CREDENTIAL);
-binance.setSandboxMode(true);
-
-(async () => {
-  await binance.loadMarkets();
-})();
+// (async () => {
+//   await binance.loadMarkets();
+// })();
 
 exports.getDatas = async (req, res) => {
   let currencies = binance.currencies;
   res.json({ currencies });
 };
+
 const errorMessage = (e) => {
   return JSON.parse(e.message.slice(8)).msg;
 };
+
 //--------------------------------- Binance Functions --------------------------------------//
 const binanceSell = async (symbol, amount, price, flightId, params) => {
   try {

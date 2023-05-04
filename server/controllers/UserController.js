@@ -1,5 +1,6 @@
 const axios = require('axios');
 const mongoose = require('mongoose');
+const ccxt = require('ccxt');
 
 exports.login = async (req, res, next) => {
   const { email, password } = req.body;
@@ -44,22 +45,6 @@ module.exports.isAuthorized = async function(req, res, next) {
   }
 };
 
-module.exports.isDBConnected = async function(req, res, next) {
-  try {
-    if (isDBConnected) {
-      next();
-    } else {
-      res.status(503).json({
-        error: 'You need to connect to database first.'
-      });
-    }
-  } catch (e) {
-    res.status(503).json({
-      error: 'Something went wrong.' + e.message
-    });
-  }
-};
-
 exports.changeLicenseKey = async (req, res) => {
   customer_licenseKey = req.body.licenseKey;
   await isValidLicenseKey(customer_email, req.body.licenseKey);
@@ -90,25 +75,37 @@ async function isValidLicenseKey(email, licenseKey) {
   }
 }
 
-exports.connectDB = async (req, res) => {
-  mongoose.connect(req.body.dbUrl,
-    {
-      useNewUrlParser: true,
-      useFindAndModify: false,
-      user: req.body.dbUserName,
-      pass: req.body.dbPassword,
-      dbName: 'TG',
-      retryWrites: true,
-      w: 'majority'
-    }).then(() => {
-    res.json({ success: true });
-    isDBConnected = true;
-  })
-    .catch((err) => console.log(err));
+module.exports.checkKeyInputted = async function(req, res, next) {
+  try {
+    if (isKeyInputted) {
+      next();
+    } else {
+      res.status(503).json({
+        error: 'You need to input binance key first.'
+      });
+    }
+  } catch (e) {
+    res.status(503).json({
+      error: 'Something went wrong.' + e.message
+    });
+  }
 };
 
-exports.isConnectedDB = async (req, res) => {
-  res.json({ isConnected: isDBConnected });
+exports.isKeyInputted = async (req, res) => {
+  res.json({ isKeyInputted: isKeyInputted });
+};
+
+exports.setKey = async (req, res) => {
+  isKeyInputted = true;
+  api_credential = {
+    apiKey: req.body.apiKey,
+    secret: req.body.secret
+  };
+
+  binance = new ccxt.pro.binance(api_credential);
+  binance.setSandboxMode(true);
+
+  res.json({ isKeyInputted: isKeyInputted });
 };
 
 

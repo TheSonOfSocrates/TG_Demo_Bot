@@ -13,7 +13,7 @@ import { useSnackbar } from '../../../components/snackbar';
 import MenuPopover from '../../../components/menu-popover';
 import { IconButtonAnimate } from '../../../components/animate';
 import LicenseMngDlg from 'sections/LicenseMngDlg';
-import DBConfigDlg from '../../../sections/DBConfigDlg';
+import KeyInputDlg from '../../../sections/KeyInputDlg';
 
 // ----------------------------------------------------------------------
 
@@ -37,13 +37,13 @@ const OPTIONS = [
 export default function AccountPopover() {
   const navigate = useNavigate();
 
-  const { user, logout, getLicenseKey, getConnectionStatus } = useAuthContext();
+  const { user, logout, getLicenseKey, getKeyStatus } = useAuthContext();
 
   const { enqueueSnackbar } = useSnackbar();
 
   const [openPopover, setOpenPopover] = useState(null);
   const [licenseMngDlgOpen, setLicenseMngDlgOpen] = useState(false);
-  const [dbConfigDlgOpen, setDbConfigDlgOpen] = useState(false);
+  const [keyInputDlgOpen, setKeyInputDlgOpen] = useState(false);
 
   const handleOpenPopover = (event) => {
     setOpenPopover(event.currentTarget);
@@ -51,7 +51,7 @@ export default function AccountPopover() {
 
   useEffect(() => {
     const getDataFromServer = async function() {
-      await getConnectionStatus();
+      await getKeyStatus();
       await getLicenseKey();
     }
 
@@ -80,7 +80,7 @@ export default function AccountPopover() {
   };
 
   const handleDBConfiguration = async () => {
-    setDbConfigDlgOpen(true);
+    setKeyInputDlgOpen(true);
     handleClosePopover();
   };
 
@@ -88,8 +88,8 @@ export default function AccountPopover() {
       setLicenseMngDlgOpen(false);
   };
 
-  const handleDbConfigDlgOpenClose = async () => {
-    setDbConfigDlgOpen(false);
+  const handleKeyInputDlgOpenClose = async () => {
+    setKeyInputDlgOpen(false);
   };
 
   const handleClickItem = (path) => {
@@ -147,7 +147,7 @@ export default function AccountPopover() {
         </MenuItem>
 
         <MenuItem onClick={handleDBConfiguration} sx={{ m: 1 }}>
-          DB Configuration
+          Api key & Secret
         </MenuItem>
 
         <Divider sx={{ borderStyle: 'dashed' }} />
@@ -158,7 +158,7 @@ export default function AccountPopover() {
       </MenuPopover>
 
       <LicenseMngDlg licenseMngDlgOpen={licenseMngDlgOpen} handleLicenseMngDlgClose={handleLicenseMngDlgClose}></LicenseMngDlg>
-      <DBConfigDlg dbConfigDlgOpen={dbConfigDlgOpen} handleDbConfigDlgOpenClose={handleDbConfigDlgOpenClose}></DBConfigDlg>
+      <KeyInputDlg keyInputDlgOpen={keyInputDlgOpen} handleKeyInputDlgOpenClose={handleKeyInputDlgOpenClose}></KeyInputDlg>
     </>
   );
 }

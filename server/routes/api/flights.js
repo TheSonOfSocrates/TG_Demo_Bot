@@ -3,10 +3,10 @@ const router = express.Router();
 const flightController = require('../../controllers/FlightController');
 const userController = require('../../controllers/UserController');
 
-router.get('/get', userController.isDBConnected, flightController.getFlights);
-router.get('/get/:id', userController.isDBConnected, flightController.getFlightById);
-router.post('/getBalance', userController.isDBConnected, flightController.getBalance);
-router.post('/create', userController.isDBConnected, flightController.createFlight);
-router.get('/datas', userController.isDBConnected, flightController.getDatas)
+router.get('/get', userController.checkKeyInputted, flightController.getFlights);
+router.get('/get/:id', userController.checkKeyInputted, flightController.getFlightById);
+router.post('/getBalance', userController.checkKeyInputted, flightController.getBalance);
+router.post('/create', userController.checkKeyInputted, flightController.createFlight);
+router.get('/datas', userController.checkKeyInputted, flightController.getDatas)
 
 module.exports = router;

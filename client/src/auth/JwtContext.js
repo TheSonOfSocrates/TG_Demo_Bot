@@ -22,7 +22,7 @@ const initialState = {
   isValidLicenseKey: false,
   remains: 0,
   user: null,
-  isConnected: false,
+  isKeyInputted: false,
 };
 
 const reducer = (state, action) => {
@@ -68,16 +68,16 @@ const reducer = (state, action) => {
       remains: action.payload.remains,
     };
   }
-  if (action.type === 'IS_CONNECTED_DB') {
+  if (action.type === 'IS_KEY_INPUTTED') {
     return {
       ...state,
-      isConnected: action.payload.isConnected,
+      isKeyInputted: action.payload.isKeyInputted,
     };
   }
-  if (action.type === 'CONNECT_DB') {
+  if (action.type === 'SET_KEY') {
     return {
       ...state,
-      isConnected: action.payload.isConnected,
+      isKeyInputted: action.payload.isKeyInputted,
     };
   }
 
@@ -271,14 +271,14 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
-  const getConnectionStatus = useCallback(async (options) => {
-    const response = await axios.post('/api/user/is-connected-db');
+  const getKeyStatus = useCallback(async (options) => {
+    const response = await axios.post('/api/user/is-key-inputed');
 
     if (response.status === 200) {
       dispatch({
-        type: 'IS_CONNECTED_DB',
+        type: 'IS_KEY_INPUTTED',
         payload: {
-          isConnected: response.data.isConnected,
+          isKeyInputted: response.data.isKeyInputted,
         },
       });
     } else {
@@ -286,14 +286,14 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
-  const connectDB = useCallback(async (options) => {
-    const response = await axios.post('/api/user/connect-db', options);
+  const sendKey2Server = useCallback(async (options) => {
+    const response = await axios.post('/api/user/set-key', options);
 
     if (response.status === 200) {
       dispatch({
-        type: 'CONNECT_DB',
+        type: 'SET_KEY',
         payload: {
-          isConnected: response.data.success,
+          isKeyInputted: response.data.isKeyInputted,
         },
       });
 
@@ -312,7 +312,7 @@ export function AuthProvider({ children }) {
       remains: state.remains,
       user: state.user,
       method: 'jwt',
-      isConnected: state.isConnected,
+      isKeyInputted: state.isKeyInputted,
       login,
       fakeLogin,
       register,
@@ -320,10 +320,10 @@ export function AuthProvider({ children }) {
       getLicenseKey,
       changeLicenseKey,
       checkLicenseKey,
-      getConnectionStatus,
-      connectDB
+      getKeyStatus,
+      sendKey2Server
     }),
-    [state.isAuthenticated, state.isInitialized, state.licenseKey, state.user, state.isValidLicenseKey, state.remains, state.isConnected, login, fakeLogin, logout, register, getLicenseKey, changeLicenseKey, checkLicenseKey, getConnectionStatus, connectDB],
+    [state.isAuthenticated, state.isInitialized, state.licenseKey, state.user, state.isValidLicenseKey, state.remains, state.isKeyInputted, login, fakeLogin, logout, register, getLicenseKey, changeLicenseKey, checkLicenseKey, getKeyStatus, sendKey2Server],
   );
 
   return <AuthContext.Provider value={memoizedValue}>{children}</AuthContext.Provider>;

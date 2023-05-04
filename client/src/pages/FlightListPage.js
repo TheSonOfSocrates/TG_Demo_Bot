@@ -107,7 +107,7 @@ export default function FlightListPage() {
   const [btcbusdCount, setBtcbusdCount] = useState([]);
   const [ethbtcCount, setEthbtcCount] = useState([]);
 
-  const { isValidLicenseKey, isConnected } = useAuthContext();
+  const { isValidLicenseKey, isKeyInputted } = useAuthContext();
 
   const dataFiltered = applyFilter({
     inputData: tableData,
@@ -181,7 +181,7 @@ export default function FlightListPage() {
   }, [dispatch]);
 
   useEffect(() => {
-    if (flights.length) {
+    if (flights?.length) {
       setTableData(flights);
     }
   }, [flights]);
@@ -205,7 +205,7 @@ export default function FlightListPage() {
               component={RouterLink}
               to={PATH_DASHBOARD.flight.create}
               variant="contained"
-              disabled={!isValidLicenseKey || !isConnected}
+              disabled={!isValidLicenseKey || !isKeyInputted}
               startIcon={<Iconify icon="eva:plus-fill" />}
             >
               New Flight

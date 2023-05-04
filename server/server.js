@@ -6,13 +6,20 @@ const path = require('path');
 require('dotenv').config();
 const flights = require('./routes/api/flights');
 const users = require('./routes/api/users');
+const ccxt = require('ccxt');
 
 const app = express();
 
-global.isDBConnected = false;
+global.isKeyInputted = false;
 global.customer_email = '';
 global.customer_accessToken = '';
 global.customer_licenseKey = '';
+global.api_credential = {
+  apiKey: '',
+  secret: ''
+};
+
+global.binance = undefined;
 
 //Add Cors
 app.use(cors());
@@ -47,6 +54,20 @@ app.use(
   })
 );
 app.use(bodyParser.json());
+
+const mongoURI = require('./config/keys').mongoURI;
+
+mongoose.connect(mongoURI,
+  {
+    useNewUrlParser: true,
+    useFindAndModify: false,
+    user: process.env.DB_USERNAME,
+    pass: process.env.DB_PASSWORD,
+    dbName: 'TG',
+    retryWrites: true,
+    w: 'majority'
+  }).then(() => console.log('MongoDB successfully connected'))
+  .catch((err) => console.log(err));
 
 // Routes
 app.use('/api/flight', flights);
