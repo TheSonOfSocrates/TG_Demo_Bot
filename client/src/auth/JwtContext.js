@@ -66,12 +66,7 @@ const reducer = (state, action) => {
       ...state,
       isValidLicenseKey: action.payload.isValidLicenseKey,
       remains: action.payload.remains,
-    };
-  }
-  if (action.type === 'IS_KEY_INPUTTED') {
-    return {
-      ...state,
-      isKeyInputted: action.payload.isKeyInputted,
+      isKeyInputted: action.payload.isKeyInputted
     };
   }
   if (action.type === 'SET_KEY') {
@@ -234,11 +229,11 @@ export function AuthProvider({ children }) {
     const response = await axios.post('/api/user/get-license-key');
 
     if (response.status === 200) {
-      const { licenseKey, validationInfo } = response.data;
+      const { licenseKey, validationInfo, isKeyInputted } = response.data;
       dispatch({
         type: 'SET_LICENSE_KEY',
         payload: {
-          licenseKey,
+          licenseKey
         },
       });
 
@@ -248,6 +243,7 @@ export function AuthProvider({ children }) {
         payload: {
           isValidLicenseKey,
           remains,
+          isKeyInputted
         },
       });
     }
@@ -258,31 +254,17 @@ export function AuthProvider({ children }) {
     const response = await axios.post('/api/user/check-license-key', { licenseKey });
 
     if (response.status === 200) {
-      const { validationInfo } = response.data;
+      const { validationInfo, isKeyInputted } = response.data;
 
-      const { isValidLicenseKey, remains } = validationInfo;
+      const { isValidLicenseKey, remains  } = validationInfo;
       dispatch({
         type: 'IS_VALID_LICENSE_KEY',
         payload: {
           isValidLicenseKey,
           remains,
+          isKeyInputted
         },
       });
-    }
-  }, []);
-
-  const getKeyStatus = useCallback(async (options) => {
-    const response = await axios.post('/api/user/is-key-inputed');
-
-    if (response.status === 200) {
-      dispatch({
-        type: 'IS_KEY_INPUTTED',
-        payload: {
-          isKeyInputted: response.data.isKeyInputted,
-        },
-      });
-    } else {
-      return false;
     }
   }, []);
 
@@ -320,10 +302,9 @@ export function AuthProvider({ children }) {
       getLicenseKey,
       changeLicenseKey,
       checkLicenseKey,
-      getKeyStatus,
       sendKey2Server
     }),
-    [state.isAuthenticated, state.isInitialized, state.licenseKey, state.user, state.isValidLicenseKey, state.remains, state.isKeyInputted, login, fakeLogin, logout, register, getLicenseKey, changeLicenseKey, checkLicenseKey, getKeyStatus, sendKey2Server],
+    [state.isAuthenticated, state.isInitialized, state.licenseKey, state.user, state.isValidLicenseKey, state.remains, state.isKeyInputted, login, fakeLogin, logout, register, getLicenseKey, changeLicenseKey, checkLicenseKey, sendKey2Server],
   );
 
   return <AuthContext.Provider value={memoizedValue}>{children}</AuthContext.Provider>;
