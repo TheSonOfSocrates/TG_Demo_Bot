@@ -135,8 +135,8 @@ async function isValidLicenseKey(email, licenseKey) {
 }
 
 async function authWithAccessToken(email, accessToken) {
-  const LICENSE_CHECK_ENDPOINT = 'http://localhost:5000/api/user/check-token';
-  // const LICENSE_CHECK_ENDPOINT = 'https://tg-investment.com/api/user/check-token';
+  // const LICENSE_CHECK_ENDPOINT = 'http://localhost:5000/api/user/check-token';
+  const LICENSE_CHECK_ENDPOINT = 'https://tg-investment.com/api/user/check-token';
   const response = await axios.post(LICENSE_CHECK_ENDPOINT, {
     email,
     accessToken
