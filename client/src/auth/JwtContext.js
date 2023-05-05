@@ -22,7 +22,6 @@ const initialState = {
   isValidLicenseKey: false,
   remains: 0,
   user: null,
-  isKeyInputted: false,
 };
 
 const reducer = (state, action) => {
@@ -66,13 +65,6 @@ const reducer = (state, action) => {
       ...state,
       isValidLicenseKey: action.payload.isValidLicenseKey,
       remains: action.payload.remains,
-      isKeyInputted: action.payload.isKeyInputted
-    };
-  }
-  if (action.type === 'SET_KEY') {
-    return {
-      ...state,
-      isKeyInputted: action.payload.isKeyInputted,
     };
   }
 
@@ -152,6 +144,9 @@ export function AuthProvider({ children }) {
       email,
       password,
     });
+
+    localStorage.setItem('email', email);
+
     const { accessToken, user } = response.data;
 
     setSession(accessToken);
@@ -229,11 +224,11 @@ export function AuthProvider({ children }) {
     const response = await axios.post('/api/user/get-license-key');
 
     if (response.status === 200) {
-      const { licenseKey, validationInfo, isKeyInputted } = response.data;
+      const { licenseKey, validationInfo } = response.data;
       dispatch({
         type: 'SET_LICENSE_KEY',
         payload: {
-          licenseKey
+          licenseKey,
         },
       });
 
@@ -242,8 +237,7 @@ export function AuthProvider({ children }) {
         type: 'IS_VALID_LICENSE_KEY',
         payload: {
           isValidLicenseKey,
-          remains,
-          isKeyInputted
+          remains
         },
       });
     }
@@ -254,34 +248,16 @@ export function AuthProvider({ children }) {
     const response = await axios.post('/api/user/check-license-key', { licenseKey });
 
     if (response.status === 200) {
-      const { validationInfo, isKeyInputted } = response.data;
+      const { validationInfo } = response.data;
 
-      const { isValidLicenseKey, remains  } = validationInfo;
+      const { isValidLicenseKey, remains } = validationInfo;
       dispatch({
         type: 'IS_VALID_LICENSE_KEY',
         payload: {
           isValidLicenseKey,
-          remains,
-          isKeyInputted
+          remains
         },
       });
-    }
-  }, []);
-
-  const sendKey2Server = useCallback(async (options) => {
-    const response = await axios.post('/api/user/set-key', options);
-
-    if (response.status === 200) {
-      dispatch({
-        type: 'SET_KEY',
-        payload: {
-          isKeyInputted: response.data.isKeyInputted,
-        },
-      });
-
-      return true;
-    } else {
-      return false;
     }
   }, []);
 
@@ -294,7 +270,6 @@ export function AuthProvider({ children }) {
       remains: state.remains,
       user: state.user,
       method: 'jwt',
-      isKeyInputted: state.isKeyInputted,
       login,
       fakeLogin,
       register,
@@ -302,9 +277,8 @@ export function AuthProvider({ children }) {
       getLicenseKey,
       changeLicenseKey,
       checkLicenseKey,
-      sendKey2Server
     }),
-    [state.isAuthenticated, state.isInitialized, state.licenseKey, state.user, state.isValidLicenseKey, state.remains, state.isKeyInputted, login, fakeLogin, logout, register, getLicenseKey, changeLicenseKey, checkLicenseKey, sendKey2Server],
+    [state.isAuthenticated, state.isInitialized, state.licenseKey, state.user, state.isValidLicenseKey, state.remains, login, fakeLogin, logout, register, getLicenseKey, changeLicenseKey, checkLicenseKey],
   );
 
   return <AuthContext.Provider value={memoizedValue}>{children}</AuthContext.Provider>;

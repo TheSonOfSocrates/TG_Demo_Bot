@@ -150,7 +150,13 @@ exports.getFlightById = async (req, res) => {
 
 exports.getBalance = async (req, res) => {
   const { baseAsset, quoteAsset } = req.body;
-  const balance = await binance.fetchBalance();
-  const symbolBalance = { baseAsset: balance[baseAsset], quoteAsset: balance[quoteAsset] };
-  res.json({ balance: symbolBalance });
+  try {
+    const balance = await binance.fetchBalance();
+    const symbolBalance = { baseAsset: balance[baseAsset], quoteAsset: balance[quoteAsset] };
+    res.json({ balance: symbolBalance });
+  } catch (e) {
+    res.status(508).json({
+      error: "Your Binance key and secret isn't correct."
+    });
+  }
 };

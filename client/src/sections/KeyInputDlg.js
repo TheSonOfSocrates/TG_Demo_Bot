@@ -26,6 +26,7 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import { useSnackbar } from '../components/snackbar';
+import { isValidToken, setSession } from '../auth/utils';
 // ----------------------------------------------------------------------
 
 const modalStyle = {
@@ -46,20 +47,20 @@ const modalStyle = {
 export default function KeyInputDlg(props) {
   const [showApiKey, setShowApiKey] = useState(false);
   const [showSecret, setShowSecret] = useState(false);
-  const { sendKey2Server, isKeyInputted } = useAuthContext();
 
   const [apiKey, setApiKey] = useState('');
   const [secret, setSecret] = useState('');
 
   const { enqueueSnackbar } = useSnackbar();
 
+  const { getLicenseKey } = useAuthContext();
+
   const setKeyWithOption = () => {
-    const result = sendKey2Server({ apiKey, secret });
-    if (result) {
-      enqueueSnackbar('Key saved successfully.');
-    } else {
-      enqueueSnackbar('Key wasn\'t saved.');
-    }
+    localStorage.setItem('binanceCredential', JSON.stringify({ apiKey, secret }));
+    enqueueSnackbar('Key saved successfully.');
+    setSession(localStorage.getItem('accessToken'));
+
+    getLicenseKey();
   };
 
   const handleApiKeyChange = (e) => {
@@ -90,12 +91,10 @@ export default function KeyInputDlg(props) {
       onClose={handleKeyInputDlgClose}>
       <Box sx={modalStyle}>
         <DialogTitle id='draggable-dialog-title'>
-          {'ApiKey & Secret ' + (isKeyInputted ? '(Inputted)' : '(Not Inputted)')}
+          ApiKey & Secret
         </DialogTitle>
         <DialogContent>
-          {!isKeyInputted &&
-            <Alert severity='info'>{`Api key and secret is used only once and then deleted immediately.`}</Alert>}
-          {isKeyInputted && <Alert severity='success'>{`You already set your api key & secret.`}</Alert>}
+          <Alert severity='info'>Api key and secret is used only once and then deleted immediately.</Alert>
           <>
             <FormControl sx={{ m: 1, mt: 3, width: '100%' }} variant='standard'>
               <InputLabel htmlFor='standard-adornment-password'>Api key</InputLabel>
@@ -134,7 +133,7 @@ export default function KeyInputDlg(props) {
           </>
         </DialogContent>
         <DialogActions>
-          <Button onClick={setKeyWithOption} disabled={isKeyInputted}>
+          <Button onClick={setKeyWithOption}>
             Save
           </Button>
           <Button autoFocus onClick={handleKeyInputDlgClose}>

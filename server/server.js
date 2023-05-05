@@ -10,18 +10,10 @@ const ccxt = require('ccxt');
 
 const app = express();
 
-global.isKeyInputted = false;
-global.customer_email = '';
-global.customer_accessToken = '';
-global.customer_licenseKey = '';
-global.api_credential = {
-  apiKey: '',
-  secret: ''
-};
-
+global.customerInfo = undefined;
 global.binance = undefined;
 
-//Add Cors
+// Add Cors
 app.use(cors());
 app.options('*', cors());
 app.use(express.static('public'));

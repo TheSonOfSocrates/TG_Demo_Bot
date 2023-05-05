@@ -84,8 +84,8 @@ export default function FlightNewForm({ isEdit = false, currentFlight }) {
 
   const values = watch();
 
-  const price = useBinancePrice(values?.pair?.symbol);
   const balance = useSpotBalance(values?.pair?.baseAsset, values?.pair?.quoteAsset);
+  const price = useBinancePrice(values?.pair?.symbol);
   console.log('balance===>', balance);
   useEffect(() => {
     // if (isEdit && currentFlight) {
