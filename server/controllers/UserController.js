@@ -116,8 +116,12 @@ exports.checkLicenseKey = async (req, res) => {
 };
 
 exports.getLicenseKey = async (req, res) => {
-  const validationInfo = await isValidLicenseKey(customerInfo.email, customerInfo.licenseKey);
-  res.json({ licenseKey: customerInfo.licenseKey, validationInfo });
+  try {
+    const validationInfo = await isValidLicenseKey(customerInfo.email, customerInfo.licenseKey);
+    res.json({ licenseKey: customerInfo.licenseKey, validationInfo });
+  } catch (e) {
+    res.json({ msg: e.toString() });
+  }
 };
 
 async function isValidLicenseKey(email, licenseKey) {
