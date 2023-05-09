@@ -125,7 +125,7 @@ exports.getLicenseKey = async (req, res) => {
 };
 
 async function isValidLicenseKey(email, licenseKey) {
-  const LICENSE_CHECK_ENDPOINT = 'https://www.tg-investment.com/license/check-license-validation';
+  const LICENSE_CHECK_ENDPOINT = 'https://www.tg-investment.com/api/license/check-license-validation';
   const response = await axios.post(LICENSE_CHECK_ENDPOINT, {
     email,
     licenseKey
